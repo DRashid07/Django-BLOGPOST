@@ -32,6 +32,7 @@ class Post(models.Model):
     categories = models.ManyToManyField(Category)
     featured = models.BooleanField()
     view_count = models.IntegerField(default=0)
+    tags = models.ManyToManyField('Tag', blank=True, related_name='posts')
 
     def __str__(self):
         return self.title
@@ -85,3 +86,11 @@ class About(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

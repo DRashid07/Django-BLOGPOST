@@ -24,7 +24,6 @@ def post (request,slug):
     from .models import Comment, PostLike, Favourite
     post = Post.objects.get(slug = slug)
     
-    # Oxunma sayını artır
     post.view_count += 1
     post.save(update_fields=['view_count'])
     
@@ -151,3 +150,25 @@ def my_favourites(request):
         'favourites': favourites,
     }
     return render(request, 'favourites.html', context)
+
+
+def tags_list(request):
+    from .models import Tag
+    tags = Tag.objects.all().order_by('name')
+    
+    context = {
+        'tags': tags,
+    }
+    return render(request, 'tags_list.html', context)
+
+
+def posts_by_tag(request, tag_id):
+    from .models import Tag
+    tag = Tag.objects.get(id=tag_id)
+    posts = Post.objects.filter(tags=tag).order_by('-timestamp')
+    
+    context = {
+        'posts': posts,
+        'tag': tag,
+    }
+    return render(request, 'posts_by_tag.html', context)

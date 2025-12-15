@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Author, Category, Post, Comment, PostLike, Favourite, About
+from .models import Author, Category, Post, Comment, PostLike, Favourite, About, Tag
 
 admin.site.register(Author)
 admin.site.register(Category)
@@ -9,3 +9,4 @@ admin.site.register(Comment)
 admin.site.register(PostLike)
 admin.site.register(Favourite)
 admin.site.register(About)
+admin.site.register(Tag)
