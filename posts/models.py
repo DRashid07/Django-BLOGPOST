@@ -31,6 +31,7 @@ class Post(models.Model):
     thumbnail = models.ImageField()
     categories = models.ManyToManyField(Category)
     featured = models.BooleanField()
+    view_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -72,14 +73,15 @@ class Favourite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} favourited {self.post.title}"
-    
-class Favourite(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="favourites")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class About(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('post', 'user')
+        verbose_name_plural = "About Page"
 
     def __str__(self):
-        return f"{self.user.username} favourited {self.post.title}"
+        return self.title

@@ -23,6 +23,11 @@ def homepage (request):
 def post (request,slug):
     from .models import Comment, PostLike, Favourite
     post = Post.objects.get(slug = slug)
+    
+    # Oxunma sayını artır
+    post.view_count += 1
+    post.save(update_fields=['view_count'])
+    
     latest = Post.objects.order_by('-timestamp')[:3]
     total_likes = post.likes.count()
     user_has_liked = False
@@ -56,8 +61,13 @@ def post (request,slug):
     }
     return render(request, 'post.html', context)
 
-def about (request):
-    return render(request, 'about_page.html')
+def about(request):
+    from .models import About
+    about_content = About.objects.first()
+    context = {
+        'about': about_content
+    }
+    return render(request, 'about_page.html', context)
 
 def search(request):
     queryset = Post.objects.all()
