@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container w-full md:max-w-3xl mx-auto pt-20">
+    <div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal">
+        
+        <div class="font-sans">
+            <h1 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">
+                {{ question.question_text }}
+            </h1>
+            <p class="text-sm md:text-base font-normal text-gray-600 mb-8">
+                {{ question.pub_date|date:"d M Y, H:i" }}
+            </p>
+        </div>
+
+        {% if error_message %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+            <strong class="font-bold">Xəta!</strong>
+            <span class="block sm:inline">{{ error_message }}</span>
+        </div>
+        {% endif %}
+
+        <form action="{% url 'polls:vote' question.id %}" method="post" class="space-y-4">
+            {% csrf_token %}
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <fieldset>
+                    <legend class="text-xl font-semibold mb-4 text-gray-900">Seçiminizi edin:</legend>
+                    {% for choice in question.choices.all %}
+                    <div class="flex items-center mb-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                        <input type="radio" 
+                               name="choice" 
+                               id="choice{{ forloop.counter }}" 
+                               value="{{ choice.id }}"
+                               class="w-4 h-4 text-pink-600 focus:ring-pink-500">
+                        <label for="choice{{ forloop.counter }}" 
+                               class="ml-3 text-lg text-gray-700 cursor-pointer">
+                            {{ choice.choice_text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+                
+                <div class="mt-6 flex gap-4">
+                    <button type="submit" 
+                            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                        Səs ver
+                    </button>
+                    <a href="{% url 'polls:index' %}" 
+                       class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors inline-block">
+                        Geri
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

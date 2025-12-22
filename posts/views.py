@@ -69,16 +69,38 @@ def about(request):
     return render(request, 'about_page.html', context)
 
 def search(request):
-    queryset = Post.objects.all()
+    from .models import Comment, Tag
     query = request.GET.get('q')
+    
     if query:
-        queryset = queryset.filter(
+        # Post axtarışı: title, overview, content, author username
+        queryset = Post.objects.filter(
             Q(title__icontains=query) |
             Q(overview__icontains=query) |
-            Q(content__icontains=query)
+            Q(content__icontains=query) |
+            Q(author__user__username__icontains=query)
         ).distinct()
+        
+        # Comment-lərdə axtarış - post-ları tap
+        comment_posts = Post.objects.filter(
+            Q(comments__name__icontains=query) |
+            Q(comments__body__icontains=query)
+        ).distinct()
+        
+        # Tag-lərdə axtarış - post-ları tap
+        tag_posts = Post.objects.filter(
+            tags__name__icontains=query
+        ).distinct()
+        
+        # Hamısını birləşdir (union)
+        queryset = (queryset | comment_posts | tag_posts).distinct()
+    else:
+        queryset = Post.objects.none()
+    
     context = {
-        'object_list': queryset
+        'object_list': queryset,
+        'query': query,
+        'result_count': queryset.count()
     }
     return render(request, 'search_bar.html', context)
 
